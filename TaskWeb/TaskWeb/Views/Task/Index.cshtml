@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+@model List<TaskWeb.Models.Task>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <h3>All Tasks</h3>    
+        <ul>
+            @foreach( var t in Model)
+            {
+                <li>@string.Format("{0}", t.Name)</li>
+            }
+        </ul>
+    </div>
+</body>
+</html>
