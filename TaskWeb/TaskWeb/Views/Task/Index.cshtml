@@ -15,9 +15,15 @@
     <div>
         <h3>All Tasks</h3>    
         <ul>
-            @foreach( var t in Model)
+            @foreach (var t in Model)
             {
-                <li>@string.Format("{0}", t.Name)</li>
+                if(t.Complete == true)
+                {
+                    <li>@string.Format("{0} (completed)", t.Name)</li>
+                } else
+                {
+                    <li>@string.Format("{0} (active - ", t.Name) @Html.ActionLink("complete", "Complete", "Task", new { TaskID = t.TaskId }, null)@string.Format(")")</li>
+                }
             }
         </ul>
     </div>

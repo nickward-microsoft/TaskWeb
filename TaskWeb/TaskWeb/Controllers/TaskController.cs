@@ -21,5 +21,13 @@ namespace TaskWeb.Controllers
             
             return View(_tm.Tasks);
         }
+
+        // GET: Complete
+        public async Task<ActionResult> Complete(int TaskId)
+        {
+            await _tm.CompleteTaskAsync(TaskId);
+
+            return View();
+        }
     }
 }
