@@ -29,5 +29,25 @@ namespace TaskWeb.Controllers
 
             return View();
         }
+
+        // GET: AddTask
+        public async Task<ActionResult> AddTask()
+        {
+            return PartialView("AddTask", new TaskWeb.Models.Task());
+        }
+
+        // POST: AddTask
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddTask(TaskWeb.Models.Task TaskToAdd)
+        {
+            if (ModelState.IsValid)
+            {
+                await _tm.AddTaskAsync(TaskToAdd);
+                return RedirectToAction("Index");
+            }
+
+            return PartialView("AddTask", TaskToAdd);
+        }
     }
 }

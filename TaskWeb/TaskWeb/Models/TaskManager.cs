@@ -58,5 +58,24 @@ namespace TaskWeb.Models
                 }
             }
         }
+
+        public async System.Threading.Tasks.Task AddTaskAsync(Task TaskToAdd)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://hectagonapi.azure-api.net");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Trace", "true");
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", hectagonapikey);
+
+                HttpResponseMessage response = await client.PostAsJsonAsync("task", TaskToAdd);
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                    //taskList.Add(newTask);
+                }
+            }
+        }
     }
 }
