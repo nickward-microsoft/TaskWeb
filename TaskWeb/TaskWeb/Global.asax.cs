@@ -12,6 +12,10 @@ namespace TaskWeb
     {
         protected void Application_Start()
         {
+            // Retrieve the Application Insights key from the web.config file and set it as the active InstrumentationKey
+            Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration.Active.InstrumentationKey =
+                System.Web.Configuration.WebConfigurationManager.AppSettings["AppInsightsKey"];
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
