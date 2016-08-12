@@ -13,17 +13,18 @@ namespace TaskWeb.Models
         private List<Task> taskList = new List<Task>();
         public IEnumerable<Task> Tasks { get { return taskList; } }
 
-        private string hectagonapikey = WebConfigurationManager.AppSettings["hectagonapikey"];
+        private string apimKey = WebConfigurationManager.AppSettings["APIMKey"];
+        private string apimEndpoint = WebConfigurationManager.AppSettings["APIMEndpoint"];
 
         public async System.Threading.Tasks.Task CompleteTaskAsync(int TaskIDToComplete)
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://hectagonapi.azure-api.net");
+                client.BaseAddress = new Uri(apimEndpoint);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Trace", "true");
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", hectagonapikey);
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apimKey);
 
                 var method = new HttpMethod("PATCH");
 
@@ -44,11 +45,11 @@ namespace TaskWeb.Models
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://hectagonapi.azure-api.net");
+                client.BaseAddress = new Uri(apimEndpoint);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Trace", "true");
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", hectagonapikey);
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apimKey);
 
                 HttpResponseMessage response = await client.GetAsync("task");
                 if (response.IsSuccessStatusCode)
@@ -63,11 +64,11 @@ namespace TaskWeb.Models
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://hectagonapi.azure-api.net");
+                client.BaseAddress = new Uri(apimEndpoint);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Trace", "true");
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", hectagonapikey);
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apimKey);
 
                 HttpResponseMessage response = await client.PostAsJsonAsync("task", TaskToAdd);
                 if (response.IsSuccessStatusCode)
