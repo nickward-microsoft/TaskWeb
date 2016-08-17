@@ -1,21 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
+using TaskWeb.Helpers;
 using TaskWeb.Models;
 
 namespace TaskWeb.Controllers
 {
     public class ProjectController : Controller
     {
-        ProjectManager _projectManager = new ProjectManager();
-
+        private List<Project> projectList = new List<Project>();
+        
         // GET: Project
         public async System.Threading.Tasks.Task<ActionResult> Index()
         {
-            await _projectManager.RefreshProjectList();
-            return View(_projectManager.ProjectList);
+            using (var client = APIMHelper.NewAPIMHttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("project");
+                if (response.IsSuccessStatusCode)
+                {
+                    projectList = await response.Content.ReadAsAsync<List<Project>>();
+                }
+            }
+            return View(projectList);
         }
 
         // GET: AddTask
@@ -31,11 +42,16 @@ namespace TaskWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _projectManager.AddProjectAsync(ProjectToAdd);
+                using (var client = APIMHelper.NewAPIMHttpClient())
+                {
+                    HttpResponseMessage response = await client.PostAsJsonAsync(String.Concat("project/", ProjectToAdd.Name), ProjectToAdd);
+                }
                 return RedirectToAction("Index");
             }
 
             return PartialView("AddProject", ProjectToAdd);
         }
+
+        
     }
 }

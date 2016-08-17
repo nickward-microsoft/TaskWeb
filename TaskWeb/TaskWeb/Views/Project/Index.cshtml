@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "All Projects";
+    ViewBag.Title = "Add Task to Project";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,18 +14,20 @@
 </head>
 <body>
     <div>
-        <h3>All Tasks</h3>    
+        <h3>All Projects</h3>    
         <ul>
             @foreach (var p in Model)
             {
-                if(p.Status == "Complete")
+                if (p.Status == "Complete")
                 {
                     <li>@string.Format("{0} (completed)", p.Name)</li>
-                } else
+                }
+                else
                 {
-                    <li>@string.Format("{0} (active - ", p.Name) @Html.ActionLink("complete", "Complete", "Project", new { ProjectName = p.Name }, null)@string.Format(")")</li>
+                    <li>@string.Format("{0} (active - ", p.Name) @Html.ActionLink("add tasks", "Index", "AddTaskToProject", new { ProjectName = p.Name }, null) @string.Format(" - ") @Html.ActionLink("complete", "Complete", "Project", new { ProjectName = p.Name }, null) @string.Format(")")</li>
                 }
             }
+            
         </ul>
         <br />
         @Html.ActionLink("Add a project", "AddProject")

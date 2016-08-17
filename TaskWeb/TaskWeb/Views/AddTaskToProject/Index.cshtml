@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Add Task to Project";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model TaskWeb.Models.ProjectTask
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <h3>Project: "@Model.project.Name"</h3>    
+        <ul>
+            @foreach (var t in Model.allTaskList)
+            {
+                if (t.Complete != true)
+                {
+                    <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("add this task", "AddTask", "AddTaskToProject", new { projectName = Model.project.Name, TaskID = t.TaskId }, null)</li>
+                }
+            }
+            
+        </ul>
+        <br />
+        @Html.ActionLink("Add a project", "AddProject")
+    </div>
+</body>
+</html>
