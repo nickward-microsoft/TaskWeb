@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using TaskWeb.Helpers;
 using TaskWeb.Models;
 
 namespace TaskWeb.Controllers
@@ -11,23 +13,57 @@ namespace TaskWeb.Controllers
     public class TaskController : Controller
     {
 
-        TaskManager _tm = new TaskManager();
-
         // GET: Task
         public async Task<ActionResult> Index()
         {
+            var taskList = await GetTasks();
+            return View(taskList);
+        }
 
-            await _tm.RefreshTasksAsync();
-            
-            return View(_tm.Tasks);
+        private async System.Threading.Tasks.Task<List<Models.Task>> GetTasks()
+        {
+            var taskList = new List<Models.Task>();
+
+            using (var client = APIMHelper.NewAPIMHttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("task");
+                if (response.IsSuccessStatusCode)
+                {
+                    taskList = await response.Content.ReadAsAsync<List<Models.Task>>();
+                }
+            }
+
+            return taskList;
         }
 
         // GET: Complete
         public async Task<ActionResult> Complete(int TaskId)
         {
-            await _tm.CompleteTaskAsync(TaskId);
+            using (var client = APIMHelper.NewAPIMHttpClient() )
+            {
+                var method = new HttpMethod("PATCH");
+                string apiOperationString = String.Concat("task/complete/", TaskId.ToString());
+                var request = new HttpRequestMessage(method, apiOperationString);
+                var response = await client.SendAsync(request);
+            }
 
-            return View();
+            var taskList = await GetTasks();
+            return View("Index", taskList);
+        }
+
+        // GET: Delete
+        public async Task<ActionResult> Delete(int TaskId)
+        {
+            using (var client = APIMHelper.NewAPIMHttpClient())
+            {
+                var method = new HttpMethod("DELETE");
+                string apiOperationString = String.Concat("task/", TaskId.ToString());
+                var request = new HttpRequestMessage(method, apiOperationString);
+                var response = await client.SendAsync(request);
+            }
+
+            var taskList = await GetTasks();
+            return View("Index", taskList);
         }
 
         // GET: AddTask
@@ -43,7 +79,10 @@ namespace TaskWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tm.AddTaskAsync(TaskToAdd);
+                using (var client = APIMHelper.NewAPIMHttpClient())
+                {
+                    HttpResponseMessage response = await client.PostAsJsonAsync("task", TaskToAdd);
+                }
                 return RedirectToAction("Index");
             }
 

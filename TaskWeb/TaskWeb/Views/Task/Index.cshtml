@@ -14,17 +14,18 @@
 </head>
 <body>
     <div>
-        <h3>All Tasks</h3>    
+        <h3>Active Tasks</h3>    
         <ul>
-            @foreach (var t in Model)
+            @foreach (var t in Model.Where(k => k.Complete != true))
             {
-                if(t.Complete == true)
-                {
-                    <li>@string.Format("{0} (completed)", t.Name)</li>
-                } else
-                {
-                    <li>@string.Format("{0} (active - ", t.Name) @Html.ActionLink("complete", "Complete", "Task", new { TaskID = t.TaskId }, null)@string.Format(")")</li>
-                }
+                <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("complete", "Complete", "Task", new { TaskID = t.TaskId }, null)</li>
+            }
+        </ul>
+        <h3>Completed Tasks</h3>
+        <ul>
+            @foreach (var t in Model.Where(k => k.Complete == true))
+            {
+                <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("delete", "Delete", "Task", new { TaskID = t.TaskId }, null)</li>
             }
         </ul>
         <br />
