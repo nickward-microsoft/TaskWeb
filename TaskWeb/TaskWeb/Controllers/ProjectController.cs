@@ -14,9 +14,15 @@ namespace TaskWeb.Controllers
     public class ProjectController : Controller
     {
         private List<Project> projectList = new List<Project>();
-        
+
         // GET: Project
         public async System.Threading.Tasks.Task<ActionResult> Index()
+        {
+            await GetProjects();
+            return View(projectList);
+        }
+
+        private async System.Threading.Tasks.Task<List<Project>> GetProjects()
         {
             using (var client = APIMHelper.NewAPIMHttpClient())
             {
@@ -26,7 +32,36 @@ namespace TaskWeb.Controllers
                     projectList = await response.Content.ReadAsAsync<List<Project>>();
                 }
             }
-            return View(projectList);
+
+            return projectList;
+        }
+
+        public async System.Threading.Tasks.Task<ActionResult> Complete(string projectName)
+        {
+            using (var client = APIMHelper.NewAPIMHttpClient())
+            {
+                var method = new HttpMethod("PATCH");
+                string apiOperationString = String.Concat("project/", projectName);
+                var request = new HttpRequestMessage(method, apiOperationString);
+                var response = await client.SendAsync(request);
+            }
+
+            await GetProjects();
+            return View("Index", projectList);
+        }
+
+        public async System.Threading.Tasks.Task<ActionResult> Delete(string projectName)
+        {
+            using (var client = APIMHelper.NewAPIMHttpClient())
+            {
+                var method = new HttpMethod("DELETE");
+                string apiOperationString = String.Concat("project/", projectName);
+                var request = new HttpRequestMessage(method, apiOperationString);
+                var response = await client.SendAsync(request);
+            }
+
+            await GetProjects();
+            return View("Index", projectList);
         }
 
         // GET: AddTask

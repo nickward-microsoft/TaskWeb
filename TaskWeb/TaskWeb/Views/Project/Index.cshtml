@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Add Task to Project";
+    ViewBag.Title = "Projects";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,22 +14,21 @@
 </head>
 <body>
     <div>
-        <h3>All Projects</h3>    
+        <h3>Active Projects</h3>    
         <ul>
-            @foreach (var p in Model)
+            @foreach (var p in Model.Where(t => t.Status != "Completed"))
             {
-                if (p.Status == "Complete")
-                {
-                    <li>@string.Format("{0} (completed)", p.Name)</li>
-                }
-                else
-                {
-                    <li>@string.Format("{0} (active - ", p.Name) @Html.ActionLink("add tasks", "Index", "AddTaskToProject", new { ProjectName = p.Name }, null) @string.Format(" - ") @Html.ActionLink("complete", "Complete", "Project", new { ProjectName = p.Name }, null) @string.Format(")")</li>
-                }
+                <li>@string.Format("{0} - ", p.Name) @Html.ActionLink("add tasks", "Index", "AddTaskToProject", new { ProjectName = p.Name }, null) @string.Format(" - ") @Html.ActionLink("complete", "Complete", "Project", new { ProjectName = p.Name }, null)</li>
             }
-            
         </ul>
-        <br />
+        <h3>Completed Projects</h3>
+        <ul>
+            @foreach (var p in Model.Where(t => t.Status == "Completed"))
+            {
+                <li>@string.Format("{0} - ", p.Name) @Html.ActionLink("delete", "Delete", "Project", new { ProjectName = p.Name }, null)</li>
+            }
+        </ul>
+<br />
         @Html.ActionLink("Add a project", "AddProject")
     </div>
 </body>
