@@ -14,19 +14,43 @@
 </head>
 <body>
     <div>
-        <h3>Project: "@Model.project.Name"</h3>    
+        <h3>Tasks in Project: "@Model.project.Name"</h3>
+        <ul>
+            @if(Model.project.TaskIdList.Count == 0)
+            {
+                <li>No tasks</li>
+            }
+            @foreach (var id in Model.project.TaskIdList)
+            {
+                <li>@string.Format("{0}", Model.allTaskList.First(t => t.TaskId == id).Name) </li>
+            }
+
+        </ul>
+        <h3>Add a task to this project:</h3>
         <ul>
             @foreach (var t in Model.allTaskList)
             {
                 if (t.Complete != true)
                 {
-                    <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("add this task", "AddTask", "AddTaskToProject", new { projectName = Model.project.Name, TaskID = t.TaskId }, null)</li>
+                    var found = false;
+                    foreach(var id in Model.project.TaskIdList)
+                    {
+                        if(id == t.TaskId)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("add this task", "AddTask", "AddTaskToProject", new { projectName = Model.project.Name, TaskID = t.TaskId }, null)</li>
+                    }
                 }
             }
-            
+
         </ul>
         <br />
-        @Html.ActionLink("Add a project", "AddProject")
+        @Html.ActionLink("Back to Projects", "Index", "Project")
     </div>
 </body>
 </html>

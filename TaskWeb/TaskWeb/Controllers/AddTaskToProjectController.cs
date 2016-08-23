@@ -42,6 +42,7 @@ namespace TaskWeb.Controllers
                 var request = new HttpRequestMessage(method, apiOperationString);
                 var response = await client.SendAsync(request);
             }
+            await this.RefreshProjectTask(projectName);
             return View("Index", pt);
         }
     }
