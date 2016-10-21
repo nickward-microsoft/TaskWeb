@@ -21,6 +21,7 @@
                 <li>@string.Format("{0} - ", p.Name) @Html.ActionLink("add tasks", "Index", "AddTaskToProject", new { ProjectName = p.Name }, null) @string.Format(" - ") @Html.ActionLink("complete", "Complete", "Project", new { ProjectName = p.Name }, null)</li>
             }
         </ul>
+        @Html.ActionLink("Add a project", "AddProject")
         <h3>Completed Projects</h3>
         <ul>
             @foreach (var p in Model.Where(t => t.Status == "Completed"))
@@ -29,7 +30,7 @@
             }
         </ul>
 <br />
-        @Html.ActionLink("Add a project", "AddProject")
+        
     </div>
 </body>
 </html>

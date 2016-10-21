@@ -21,6 +21,7 @@
                 <li>@string.Format("{0} - ", t.Name) @Html.ActionLink("complete", "Complete", "Task", new { TaskID = t.TaskId }, null)</li>
             }
         </ul>
+        @Html.ActionLink("Add a task", "AddTask")
         <h3>Completed Tasks</h3>
         <ul>
             @foreach (var t in Model.Where(k => k.Complete == true))
@@ -29,7 +30,7 @@
             }
         </ul>
         <br />
-        @Html.ActionLink("Add a task", "AddTask")
+        
     </div>
 </body>
 </html>
